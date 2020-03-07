@@ -1,2 +1,4 @@
 datasets/
 results/
+__pycache__/
+cache/

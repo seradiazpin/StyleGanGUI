@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Style GAN Playground</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="/js/mixing.js"></script>
+    <script type="text/javascript" src="/js/grid.js"></script>
+    <script type="text/javascript" src="/js/generate.js"></script>
+    <script type="text/javascript" src="/js/trick.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>Playground</h1>
+            </div>
+        </div>
+
+        <!-- Mixing  -->
+        <div class="card">
+            <div class="card-header">
+                Mixing
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <img src="/images/generated/mixin.png" id="mix" style="width: 100%;" alt="">
+                    </div>
+                    <div class="col-sm-6">
+                        <form>
+                            <div class="form-group row">
+                                <label for="Seed1Mix" class="col-sm-2 col-form-label">Seed first Image</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="Seed1Mix" placeholder="Seed">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Seed2Mix" class="col-sm-2 col-form-label">Seed Second Image</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="Seed2Mix" placeholder="Seed">
+                                </div>
+                            </div>
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style0">
+                                            <label class="form-check-label" for="style0">
+                                                style 0
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style1">
+                                            <label class="form-check-label" for="style1">
+                                                style 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style2">
+                                            <label class="form-check-label" for="style2">
+                                                style 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style3">
+                                            <label class="form-check-label" for="style3">
+                                                style 3
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style4">
+                                            <label class="form-check-label" for="style4">
+                                                style 4
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style5">
+                                            <label class="form-check-label" for="style5">
+                                                style 5
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style6">
+                                            <label class="form-check-label" for="style6">
+                                                style 6
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style7">
+                                            <label class="form-check-label" for="style7">
+                                                style 7
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style8">
+                                            <label class="form-check-label" for="style8">
+                                                style 8
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="style9">
+                                            <label class="form-check-label" for="style9">
+                                                style 9
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <a type="submit" class="btn btn-primary" onclick="mix()">Generate Image</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Simple image -->
+        <div class="card">
+            <div class="card-header">
+                Generate Image
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img src="/images/generated/generated.png" id="gen" style="width: 100%;" alt="">
+                    </div>
+                    <div class="col-sm-6">
+                        <form>
+                            <div class="form-group row">
+                                <label for="Seed1Generate" class="col-sm-2 col-form-label">Seed</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="Seed1Generate" placeholder="Seed">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <a type="submit" class="btn btn-primary" onclick="generate()">Generate Image</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trick  -->
+        <div class="card">
+            <div class="card-header">
+                Trick
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <img src="/images/generated/trick.png" id="trick" style="width: 100%;" alt="">
+                    </div>
+                    <div class="col-sm-2">
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <a type="submit" class="btn btn-primary" onclick="trick()">Generate</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid  -->
+        <div class="card">
+            <div class="card-header">
+                Grid
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <img src="/images/generated/grid.png" id="grid" style="width: 100%;" alt="">
+                    </div>
+                    <div class="col-sm-2">
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <a type="submit" class="btn btn-primary" onclick="grid()">Generate</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

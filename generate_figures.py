@@ -14,23 +14,31 @@ import PIL.Image
 import dnnlib
 import dnnlib.tflib as tflib
 import config
-
+import random
 #----------------------------------------------------------------------------
 # Helpers for loading and using pre-trained generators.
 
-url_ffhq        = 'https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ' # karras2019stylegan-ffhq-1024x1024.pkl
+url_ffhq        = os.path.abspath("results/00004-sgan-poke-1gpu/network-snapshot-015204.pkl")  # karras2019stylegan-ffhq-1024x1024.pkl
+#url_ffhq        = os.path.abspath("cache/263e666dc20e26dcbfa514733c1d1f81_karras2019stylegan-ffhq-1024x1024.pkl")  # karras2019stylegan-ffhq-1024x1024.pkl
+
+"""
 url_celebahq    = 'https://drive.google.com/uc?id=1MGqJl28pN4t7SAtSrPdSRJSQJqahkzUf' # karras2019stylegan-celebahq-1024x1024.pkl
 url_bedrooms    = 'https://drive.google.com/uc?id=1MOSKeGF0FJcivpBI7s63V9YHloUTORiF' # karras2019stylegan-bedrooms-256x256.pkl
 url_cars        = 'https://drive.google.com/uc?id=1MJ6iCfNtMIRicihwRorsM3b7mmtmK9c3' # karras2019stylegan-cars-512x384.pkl
 url_cats        = 'https://drive.google.com/uc?id=1MQywl0FNt6lHu8E_EUqnRbviagS7fbiJ' # karras2019stylegan-cats-256x256.pkl
-
+"""
 synthesis_kwargs = dict(output_transform=dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True), minibatch_size=8)
+
+def set_url_model(path):
+    url_ffhq = os.path.abspath(path)  # karras2019stylegan-ffhq-1024x1024.pkl
+    print("Path set to : "+ url_ffhq)
+
 
 _Gs_cache = dict()
 
 def load_Gs(url):
     if url not in _Gs_cache:
-        with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
+        with open(url, 'rb') as f:
             _G, _D, Gs = pickle.load(f)
         _Gs_cache[url] = Gs
     return _Gs_cache[url]
@@ -138,21 +146,39 @@ def draw_truncation_trick_figure(png, Gs, w, h, seeds, psis):
             canvas.paste(PIL.Image.fromarray(image, 'RGB'), (col * w, row * h))
     canvas.save(png)
 
+def generate_new(path, name, width, heigth, seed1, row_number = 1):
+    draw_uncurated_result_figure(os.path.join(path, name), load_Gs(url_ffhq), cx=0, cy=0, cw=width, ch=heigth, rows=row_number, lods=[0], seed=seed1)
+
+def generate_mix(path, name, width, heigth, seed1, seed2, styles, row_number =2):
+    draw_style_mixing_figure(os.path.join(path, name), load_Gs(url_ffhq), w=width, h=heigth, src_seeds=[seed1 for i in range(row_number)], dst_seeds=[seed2 for i in range(row_number)], style_ranges=styles)
+
+def generate_trick(path, name, width, heigth, row_number=1):
+    draw_truncation_trick_figure(os.path.join(path, name), load_Gs(url_ffhq), w=width, h=heigth, seeds=[random.randint(1,1000) for x in range(row_number)], psis=np.linspace(-1,1,21))
+
+def generate_grid(path, name, width, heigth, row_number=32):
+    draw_style_mixing_figure(os.path.join(path, name), load_Gs(url_ffhq), w=width, h=heigth, src_seeds=[ random.randint(1,1000) for x in range(0,row_number)], dst_seeds=[random.randint(1,1000) for x in range(row_number,row_number*2)], style_ranges=[range(5)]*row_number)
 #----------------------------------------------------------------------------
 # Main program.
 
 def main():
     tflib.init_tf()
     os.makedirs(config.result_dir, exist_ok=True)
-    draw_uncurated_result_figure(os.path.join(config.result_dir, 'figure02-uncurated-ffhq.png'), load_Gs(url_ffhq), cx=0, cy=0, cw=1024, ch=1024, rows=3, lods=[0,1,2,2,3,3], seed=5)
-    draw_style_mixing_figure(os.path.join(config.result_dir, 'figure03-style-mixing.png'), load_Gs(url_ffhq), w=1024, h=1024, src_seeds=[639,701,687,615,2268], dst_seeds=[888,829,1898,1733,1614,845], style_ranges=[range(0,4)]*3+[range(4,8)]*2+[range(8,18)])
-    draw_noise_detail_figure(os.path.join(config.result_dir, 'figure04-noise-detail.png'), load_Gs(url_ffhq), w=1024, h=1024, num_samples=100, seeds=[1157,1012])
-    draw_noise_components_figure(os.path.join(config.result_dir, 'figure05-noise-components.png'), load_Gs(url_ffhq), w=1024, h=1024, seeds=[1967,1555], noise_ranges=[range(0, 18), range(0, 0), range(8, 18), range(0, 8)], flips=[1])
-    draw_truncation_trick_figure(os.path.join(config.result_dir, 'figure08-truncation-trick.png'), load_Gs(url_ffhq), w=1024, h=1024, seeds=[91,388], psis=[1, 0.7, 0.5, 0, -0.5, -1])
+    #draw_uncurated_result_figure(os.path.join(config.result_dir, 'figure02-uncurated-ffhq.png'), load_Gs(url_ffhq), cx=0, cy=0, cw=64, ch=64, rows=3, lods=[0,1,2,2,3,3], seed=5)
+    #draw_style_mixing_figure(os.path.join(config.result_dir, 'figure03-style-mixing.png'), load_Gs(url_ffhq), w=64, h=64, src_seeds=[ x for x in range(64)], dst_seeds=[x for x in range(64,128)], style_ranges=[range(0,2)]*64)
+    #draw_style_mixing_figure(os.path.join(config.result_dir, 'figure03b-style-mixing.png'), load_Gs(url_ffhq), w=64, h=64, src_seeds=[ x for x in range(64)], dst_seeds=[x for x in range(64,128)], style_ranges=[range(2,4)]*64)
+    #draw_style_mixing_figure(os.path.join(config.result_dir, 'figure03c-style-mixing.png'), load_Gs(url_ffhq), w=64, h=64, src_seeds=[ x for x in range(0,64)], dst_seeds=[x for x in range(64,128)], style_ranges=[range(5)]*64)
+    
+    #draw_style_mixing_figure(os.path.join(config.result_dir, 'figure03d-style-mixing.png'), load_Gs(url_ffhq), w=64, h=64, src_seeds=[ x for x in range(60,64)], dst_seeds=[x for x in range(124,128)], style_ranges=[range(0,2)]*22+[range(2,4)]*22+[range(4,8)]*20)
+
+    #draw_noise_detail_figure(os.path.join(config.result_dir, 'figure04-noise-detail.png'), load_Gs(url_ffhq), w=64, h=64, num_samples=100, seeds=[1157,1012])
+    #draw_noise_components_figure(os.path.join(config.result_dir, 'figure05-noise-components.png'), load_Gs(url_ffhq), w=64, h=64, seeds=[1967,1555], noise_ranges=[range(0, 18), range(0, 0), range(8, 18), range(0, 8)], flips=[1])
+    
+    #draw_truncation_trick_figure(os.path.join(config.result_dir, 'figure08-truncation-trick.png'), load_Gs(url_ffhq), w=64, h=64, seeds=[x for x in range(64)], psis=np.linspace(-1,1,21))
+    """
     draw_uncurated_result_figure(os.path.join(config.result_dir, 'figure10-uncurated-bedrooms.png'), load_Gs(url_bedrooms), cx=0, cy=0, cw=256, ch=256, rows=5, lods=[0,0,1,1,2,2,2], seed=0)
     draw_uncurated_result_figure(os.path.join(config.result_dir, 'figure11-uncurated-cars.png'), load_Gs(url_cars), cx=0, cy=64, cw=512, ch=384, rows=4, lods=[0,1,2,2,3,3], seed=2)
     draw_uncurated_result_figure(os.path.join(config.result_dir, 'figure12-uncurated-cats.png'), load_Gs(url_cats), cx=0, cy=0, cw=256, ch=256, rows=5, lods=[0,0,1,1,2,2,2], seed=1)
-
+    """
 #----------------------------------------------------------------------------
 
 if __name__ == "__main__":

@@ -33,3 +33,4 @@ index 78d6fe1..20966d9 100755
              print('Loading networks from "%s"...' % network_pkl)
              G, D, Gs = misc.load_pkl(network_pkl)
          else:
+         
